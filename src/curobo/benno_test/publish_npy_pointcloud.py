@@ -58,7 +58,7 @@ def _parse_args(argv):
     parser = argparse.ArgumentParser(description="Publish a .npy pointcloud to ROS 2.")
     parser.add_argument(
         "--npy",
-        default="/home/ws/curobo/src/curobo/benno_test/pcls/bookshelf_tall_index1_filtered.npy",
+        default="/home/kreis/ws/packages/curobo/src/curobo/benno_test/pcls/bookshelf_tall_index1_filtered.npy",
         help="Path to Nx3 .npy file.",
     )
     parser.add_argument("--topic", default="/pointcloud", help="PointCloud2 topic name.")

@@ -1482,7 +1482,7 @@ if __name__ == "__main__":
     #     #robot_file="ur5e.yml"
     # )
     world_cfg, pc = build_world_from_pointcloud_npy(
-        "/home/ws/curobo/src/curobo/benno_test/pcls/bookshelf_tall_index1_filtered.npy",
+        "/home/kreis/ws/packages/curobo/src/curobo/benno_test/pcls/bookshelf_tall_index1_filtered.npy",
         z_offset=-0.4,
     )
 
