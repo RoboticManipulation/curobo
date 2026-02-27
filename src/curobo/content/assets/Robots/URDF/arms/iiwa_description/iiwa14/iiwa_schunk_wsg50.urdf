@@ -1,0 +1,459 @@
+<?xml version="1.0"?>
+<robot name="iiwa14">
+  <link name="base_link"/>
+  <!-- Joint between base_link and link_0 -->
+  <joint name="iiwa14_base_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="iiwa14_link_0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="iiwa14_link_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.1 0 0.07"/>
+      <mass value="5"/>
+      <inertia ixx="0.05" ixy="0" ixz="0" iyy="0.06" iyz="0" izz="0.03"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_0.obj"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.12 0.12 0.12"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_1" type="revolute">
+    <parent link="iiwa14_link_0"/>
+    <child link="iiwa14_link_1"/>
+    <origin rpy="0 0 0" xyz="0 0 0.15"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-2.96706" upper="2.96706" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.03 0.12"/>
+      <mass value="5.76"/>
+      <inertia ixx="0.0333" ixy="0" ixz="0" iyy="0.033" iyz="0" izz="0.0123"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0075"/>
+      <geometry>
+        <mesh filename="meshes/link_1.obj"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0075"/>
+      <geometry>
+        <box size="0.08 0.08 0.08"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_2" type="revolute">
+    <parent link="iiwa14_link_1"/>
+    <child link="iiwa14_link_2"/>
+    <origin rpy="1.57079632679   0 3.14159265359" xyz="0 0 0.19"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-2.0944" upper="2.0944" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_2">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0003 0.059 0.042"/>
+      <mass value="6.35"/>
+      <inertia ixx="0.0305" ixy="0" ixz="0" iyy="0.0304" iyz="0" izz="0.011"/>
+    </inertial>
+    <visual name="orange">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_2_orange.obj"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1 0.423529 0.0392157 1.0"/>
+      </material>
+    </visual>
+    <visual name="grey">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_2_grey.obj"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1 0.423529 0.0392157 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.09 0.09 0.045"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_3" type="revolute">
+    <parent link="iiwa14_link_2"/>
+    <child link="iiwa14_link_3"/>
+    <origin rpy="1.57079632679 0 3.14159265359" xyz="0 0.21 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-3.05433" upper="3.05433" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_3">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0.03 0.13"/>
+      <mass value="3.5"/>
+      <inertia ixx="0.025" ixy="0" ixz="0" iyy="0.0238" iyz="0" izz="0.0076"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.026"/>
+      <geometry>
+        <mesh filename="meshes/link_3.obj"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.026"/>
+      <geometry>
+        <box size="0.075 0.075 0.0355"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_4" type="revolute">
+    <parent link="iiwa14_link_3"/>
+    <child link="iiwa14_link_4"/>
+    <origin rpy="1.57079632679 0 0" xyz="0 0 0.19"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-2.0944" upper="2.0944" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_4">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0.067 0.034"/>
+      <mass value="3.5"/>
+      <inertia ixx="0.017" ixy="0" ixz="0" iyy="0.0164" iyz="0" izz="0.006"/>
+    </inertial>
+    <visual name="orage">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_4_orange.obj"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1 0.423529 0.0392157 1.0"/>
+      </material>
+    </visual>
+    <visual name="grey">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_4_grey.obj"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1 0.423529 0.0392157 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.075 0.075 0.046"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_5" type="revolute">
+    <parent link="iiwa14_link_4"/>
+    <child link="iiwa14_link_5"/>
+    <origin rpy="-1.57079632679 3.14159265359 0" xyz="0 0.21 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-2.96706" upper="2.96706" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_5">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0001 0.021 0.076"/>
+      <mass value="3.5"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.0087" iyz="0" izz="0.00449"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.026"/>
+      <geometry>
+        <mesh filename="meshes/link_5.obj"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.026"/>
+      <geometry>
+        <box size="0.075 0.075 0.0335"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_6" type="revolute">
+    <parent link="iiwa14_link_5"/>
+    <child link="iiwa14_link_6"/>
+    <origin rpy="1.57079632679 0 0" xyz="0 0.06070 0.19"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-2.0944" upper="2.0944" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_6">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0.0006 0.0004"/>
+      <mass value="1.8"/>
+      <inertia ixx="0.0049" ixy="0" ixz="0" iyy="0.0047" iyz="0" izz="0.0036"/>
+    </inertial>
+    <visual name="orange">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_6_orange.obj"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1 0.423529 0.0392157 1.0"/>
+      </material>
+    </visual>
+    <visual name="grey">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_6_grey.obj"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1 0.423529 0.0392157 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.065 0.065 0.065"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_7" type="revolute">
+    <parent link="iiwa14_link_6"/>
+    <child link="iiwa14_link_7"/>
+    <origin rpy="-1.57079632679 3.14159265359 0" xyz="0 0.081 0.06070"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-3.05433" upper="3.05433" velocity="10"/>
+  </joint>
+  <link name="iiwa14_link_7">
+    <inertial>
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
+      <mass value="1.2"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/link_7.obj"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.06 0.06 0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="iiwa14_joint_ee" type="fixed">
+    <parent link="iiwa14_link_7"/>
+    <child link="iiwa14_link_ee"/>
+    <origin rpy="0 0 0" xyz="0 0 0.071"/>
+    <dynamics damping="5.5" friction="0.025"/>
+  </joint>
+  <link name="iiwa14_link_ee">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="1e-3" ixy="0.0" ixz="0" iyy="1e-3" iyz="0" izz="1e-3"/>
+    </inertial>
+  </link>
+  <link name="grasp_frame">
+    <inertial>
+      <!-- Dummy inertial parameters to avoid link lumping-->
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </inertial>
+  </link>
+  <joint name="grasp_joint" type="fixed">
+    <origin rpy="0 0 0.0" xyz="0 0 0.13"/>
+    <axis xyz="0 0 1"/>
+    <parent link="iiwa14_link_ee"/>
+    <child link="grasp_frame"/>
+  </joint>
+<joint name="wsg_50_anterior_gripper_joint" type="fixed">
+    <insert_block name="origin"/>
+    <parent link="iiwa14_link_ee"/>
+    <child link="wsg_50_base_link"/>
+  </joint>
+  <!-- BASE LINK -->
+  <link name="wsg_50_base_link">
+    <inertial>
+      <mass value="1.2"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/WSG50_110.obj" scale="1 1 1"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/WSG50_110.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GRIPPER LEFT -->
+  <joint name="wsg_50_base_joint_gripper_left" type="prismatic">
+    <limit effort="1.0" lower="-0.055" upper="-0.0027" velocity="1.0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="wsg_50_base_link"/>
+    <child link="wsg_50_gripper_left"/>
+    <dynamics damping="100" friction="100"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <transmission name="wsg_50_base_trans_left" type="pr2_mechanism_model/SimpleTransmission">
+    <actuator name="wsg_50_base_motor_left"/>
+    <joint name="wsg_50_base_joint_gripper_left"/>
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+  </transmission>
+  <link name="wsg_50_gripper_left">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/GUIDE_WSG50_110.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.4 0.4 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/GUIDE_WSG50_110.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+  </link>
+  <!-- LEFT FINGER -->
+  <joint name="wsg_50_guide_joint_finger_left" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.023"/>
+    <parent link="wsg_50_gripper_left"/>
+    <child link="wsg_50_finger_left"/>
+    <dynamics damping="100" friction="100"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <link name="wsg_50_finger_left">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/WSG-FMF.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/WSG-FMF.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+  </link>
+  <!-- GRIPPER RIGHT -->
+  <joint name="wsg_50_base_joint_gripper_right" type="prismatic">
+    <limit effort="1.0" lower="0.0027" upper="0.055" velocity="1.0"/>
+    <origin rpy="0 0 3.14159" xyz="0 0 0"/>
+    <parent link="wsg_50_base_link"/>
+    <child link="wsg_50_gripper_right"/>
+    <axis xyz="-1 0 0"/>
+    <dynamics damping="100" friction="100"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <transmission name="wsg_50_base_trans_right" type="pr2_mechanism_model/SimpleTransmission">
+    <actuator name="wsg_50_base_motor_right"/>
+    <joint name="wsg_50_base_joint_gripper_right"/>
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+  </transmission>
+  <link name="wsg_50_gripper_right">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/GUIDE_WSG50_110.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/GUIDE_WSG50_110.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+  </link>
+  <!-- RIGHT FINGER -->
+  <joint name="wsg_50_guide_joint_finger_right" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.023"/>
+    <parent link="wsg_50_gripper_right"/>
+    <child link="wsg_50_finger_right"/>
+    <dynamics damping="100" friction="100"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <link name="wsg_50_finger_right">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/WSG-FMF.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../../../grippers/schunk_wsg_50/meshes/WSG-FMF.obj" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+  </link>
+</robot>
