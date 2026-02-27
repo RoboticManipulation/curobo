@@ -17,12 +17,13 @@ ARG ISAAC_SIM_VERSION=4.0.0
 FROM nvcr.io/nvidia/isaac-sim:${ISAAC_SIM_VERSION} AS isaac-sim
 
 FROM nvcr.io/nvidia/cudagl:${CUDA_VERSION}-devel-${BASE_DIST}
+ARG ISAAC_SIM_VERSION
 
 
 # this does not work for 2022.2.1
 #$FROM nvcr.io/nvidia/cuda:${CUDA_VERSION}-cudnn8-devel-${BASE_DIST}
 
-LABEL maintainer "User Name"
+LABEL maintainer="User Name"
 
 ARG VULKAN_SDK_VERSION=1.3.224.1
 
@@ -99,23 +100,48 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 # Download the Vulkan SDK and extract the headers, loaders, layers and binary utilities
+# RUN wget -q --show-progress \
+#     --progress=bar:force:noscroll \
+#     https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz \
+#     -O /tmp/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz \
+#     && echo "Installing Vulkan SDK ${VULKAN_SDK_VERSION}" \
+#     && mkdir -p /opt/vulkan \
+#     && tar -xf /tmp/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz -C /opt/vulkan \
+#     && mkdir -p /usr/local/include/ && cp -ra /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/include/* /usr/local/include/ \
+#     && mkdir -p /usr/local/lib && cp -ra /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/lib/* /usr/local/lib/ \
+#     && cp -a /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/lib/libVkLayer_*.so /usr/local/lib \
+#     && mkdir -p /usr/local/share/vulkan/explicit_layer.d \
+#     && cp /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/etc/vulkan/explicit_layer.d/VkLayer_*.json /usr/local/share/vulkan/explicit_layer.d \
+#     && mkdir -p /usr/local/share/vulkan/registry \
+#     && cp -a /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/share/vulkan/registry/* /usr/local/share/vulkan/registry \
+#     && cp -a /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/bin/* /usr/local/bin \
+#     && ldconfig \
+#     && rm /tmp/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz && rm -rf /opt/vulkan
+ARG VULKAN_SDK_VERSION=1.4.341.0
+
 RUN wget -q --show-progress \
     --progress=bar:force:noscroll \
-    https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz \
-    -O /tmp/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz \
+    https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkan_sdk.tar.xz?Human=true \
+    -O /tmp/vulkan_sdk.tar.xz \
     && echo "Installing Vulkan SDK ${VULKAN_SDK_VERSION}" \
     && mkdir -p /opt/vulkan \
-    && tar -xf /tmp/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz -C /opt/vulkan \
+    && tar -xf /tmp/vulkan_sdk.tar.xz -C /opt/vulkan \
     && mkdir -p /usr/local/include/ && cp -ra /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/include/* /usr/local/include/ \
     && mkdir -p /usr/local/lib && cp -ra /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/lib/* /usr/local/lib/ \
     && cp -a /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/lib/libVkLayer_*.so /usr/local/lib \
     && mkdir -p /usr/local/share/vulkan/explicit_layer.d \
-    && cp /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/etc/vulkan/explicit_layer.d/VkLayer_*.json /usr/local/share/vulkan/explicit_layer.d \
+    && if [ -d /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/etc/vulkan/explicit_layer.d ]; then \
+         cp /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/etc/vulkan/explicit_layer.d/VkLayer_*.json /usr/local/share/vulkan/explicit_layer.d; \
+       elif [ -d /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/share/vulkan/explicit_layer.d ]; then \
+         cp /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/share/vulkan/explicit_layer.d/VkLayer_*.json /usr/local/share/vulkan/explicit_layer.d; \
+       else \
+         echo "No Vulkan explicit layer jsons found"; \
+       fi \
     && mkdir -p /usr/local/share/vulkan/registry \
     && cp -a /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/share/vulkan/registry/* /usr/local/share/vulkan/registry \
     && cp -a /opt/vulkan/${VULKAN_SDK_VERSION}/x86_64/bin/* /usr/local/bin \
     && ldconfig \
-    && rm /tmp/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz && rm -rf /opt/vulkan
+    && rm /tmp/vulkan_sdk.tar.xz && rm -rf /opt/vulkan
 
 
 # Setup the required capabilities for the container runtime
@@ -133,11 +159,11 @@ EXPOSE 47995-48012/udp \
        8899/tcp \
        8891/tcp
 
-ENV OMNI_SERVER http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/${ISAAC_SIM_VERSION}
+ENV OMNI_SERVER=http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/${ISAAC_SIM_VERSION}
 # ENV OMNI_SERVER omniverse://localhost/NVIDIA/Assets/Isaac/2022.1
 # ENV OMNI_USER admin
 # ENV OMNI_PASS admin
-ENV MIN_DRIVER_VERSION 525.60.11
+ENV MIN_DRIVER_VERSION=525.60.11
 
 # Copy Isaac Sim files
 COPY --from=isaac-sim /isaac-sim /isaac-sim
@@ -162,6 +188,7 @@ RUN echo "alias omni_python='/isaac-sim/python.sh'" >> ~/.bashrc
 
 # Add cache date to avoid using cached layers older than this
 ARG CACHE_DATE=2024-04-11
+ARG INSTALL_NVBLOX=0
 
 
 # if you want to use a different version of curobo, create folder as docker/pkgs and put your
@@ -203,53 +230,70 @@ ENV PRE_CX11_ABI=ON
 
 
 
-RUN cd /pkgs && git clone https://github.com/sqlite/sqlite.git -b version-3.39.4 && \
-    cd /pkgs/sqlite && CFLAGS=-fPIC ./configure --prefix=/pkgs/sqlite/install/ && \
-    make && make install
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      cd /pkgs && git clone https://github.com/sqlite/sqlite.git -b version-3.39.4 && \
+      cd /pkgs/sqlite && CFLAGS=-fPIC ./configure --prefix=/pkgs/sqlite/install/ && \
+      make && make install; \
+    fi
 
 
 
-RUN cd /pkgs && git clone https://github.com/google/glog.git -b v0.6.0 && \
-    cd glog && \
-    mkdir build && cd build && \
-    cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DCMAKE_INSTALL_PREFIX=/pkgs/glog/install/ \
-    -DWITH_GFLAGS=OFF -DWITH_GTEST=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
-    && make -j8 && make install
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      cd /pkgs && git clone https://github.com/google/glog.git -b v0.6.0 && \
+      cd glog && \
+      mkdir build && cd build && \
+      cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+      -DCMAKE_INSTALL_PREFIX=/pkgs/glog/install/ \
+      -DWITH_GFLAGS=OFF -DWITH_GTEST=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
+      && make -j8 && make install; \
+    fi
 
 
-RUN cd /pkgs && git clone https://github.com/gflags/gflags.git -b v2.2.2 && \
-    cd gflags &&  \
-    mkdir build && cd build && \
-    cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DCMAKE_INSTALL_PREFIX=/pkgs/gflags/install/ \
-    -DGFLAGS_BUILD_STATIC_LIBS=ON -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
-    && make -j8 && make install
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      cd /pkgs && git clone https://github.com/gflags/gflags.git -b v2.2.2 && \
+      cd gflags &&  \
+      mkdir build && cd build && \
+      cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+      -DCMAKE_INSTALL_PREFIX=/pkgs/gflags/install/ \
+      -DGFLAGS_BUILD_STATIC_LIBS=ON -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
+      && make -j8 && make install; \
+    fi
 
-RUN cd /pkgs &&  git clone https://github.com/valtsblukis/nvblox.git && cd /pkgs/nvblox/nvblox && \
-    mkdir build && cd build && \
-    cmake ..  -DBUILD_REDISTRIBUTABLE=ON \
-    -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI}  -DPRE_CXX11_ABI_LINKABLE=${PRE_CX11_ABI} \
-    -DSQLITE3_BASE_PATH="/pkgs/sqlite/install/" -DGLOG_BASE_PATH="/pkgs/glog/install/" \
-    -DGFLAGS_BASE_PATH="/pkgs/gflags/install/" -DCMAKE_CUDA_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
-    -DBUILD_TESTING=OFF && \
-    make -j32 && \
-    make install
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      cd /pkgs &&  git clone https://github.com/valtsblukis/nvblox.git && cd /pkgs/nvblox/nvblox && \
+      mkdir build && cd build && \
+      cmake ..  -DBUILD_REDISTRIBUTABLE=ON \
+      -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI}  -DPRE_CXX11_ABI_LINKABLE=${PRE_CX11_ABI} \
+      -DSQLITE3_BASE_PATH="/pkgs/sqlite/install/" -DGLOG_BASE_PATH="/pkgs/glog/install/" \
+      -DGFLAGS_BASE_PATH="/pkgs/gflags/install/" -DCMAKE_CUDA_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
+      -DBUILD_TESTING=OFF && \
+      make -j32 && \
+      make install; \
+    fi
 
 # we also need libglog for pytorch:
-RUN cd /pkgs/glog && \
-    mkdir build_isaac && cd build_isaac && \
-    cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DWITH_GFLAGS=OFF -DWITH_GTEST=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
-    && make -j8 && make install
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      cd /pkgs/glog && \
+      mkdir build_isaac && cd build_isaac && \
+      cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+      -DWITH_GFLAGS=OFF -DWITH_GTEST=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=${USE_CX11_ABI} \
+      && make -j8 && make install; \
+    fi
 
-RUN cd /pkgs && git clone https://github.com/nvlabs/nvblox_torch.git && \
-    cd /pkgs/nvblox_torch && \
-    sh install_isaac_sim.sh $($omni_python -c 'import torch.utils; print(torch.utils.cmake_prefix_path)') && \
-    $omni_python -m pip install -e .
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      /isaac-sim/kit/python/bin/python3 -m ensurepip --upgrade || true; \
+      /isaac-sim/kit/python/bin/python3 -m pip install --upgrade pip setuptools wheel; \
+      cd /pkgs && git clone https://github.com/nvlabs/nvblox_torch.git && \
+      cd /pkgs/nvblox_torch && \
+      sh install_isaac_sim.sh $($omni_python -c 'import torch.utils; print(torch.utils.cmake_prefix_path)') && \
+      $omni_python -m pip install -e .; \
+    fi
 
 # install realsense for nvblox demos:
-RUN $omni_python -m pip install pyrealsense2 opencv-python transforms3d
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      $omni_python -m pip install pyrealsense2 opencv-python transforms3d; \
+    fi
 
-RUN $omni_python -m pip install "robometrics[evaluator] @ git+https://github.com/fishbotics/robometrics.git"
-
+RUN if [ "$INSTALL_NVBLOX" = "1" ]; then \
+      $omni_python -m pip install "robometrics[evaluator] @ git+https://github.com/fishbotics/robometrics.git"; \
+    fi

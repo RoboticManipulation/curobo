@@ -44,9 +44,8 @@ def save_curobo_world_to_usd():
     usd_helper.write_stage_to_file("test.usd")
 
 
-def get_trajectory(robot_file="franka.yml", dt=1.0 / 60.0, plan_grasp: bool = False):
+def get_trajectory(robot_file="franka.yml", dt=1.0 / 60.0, plan_grasp: bool = False, world_file="collision_test.yml"):
     tensor_args = TensorDeviceType()
-    world_file = "collision_test.yml"
     motion_gen_config = MotionGenConfig.load_from_robot_config(
         robot_file,
         world_file,
@@ -93,15 +92,14 @@ def get_trajectory(robot_file="franka.yml", dt=1.0 / 60.0, plan_grasp: bool = Fa
     return traj
 
 
-def save_curobo_robot_world_to_usd(robot_file="franka.yml", plan_grasp: bool = False):
+def save_curobo_robot_world_to_usd(robot_file="franka.yml", plan_grasp: bool = False, world_file="collision_test.yml"):
     tensor_args = TensorDeviceType()
-    world_file = "collision_test.yml"
     world_model = WorldConfig.from_dict(
         load_yaml(join_path(get_world_configs_path(), world_file))
     ).get_obb_world()
     dt = 1 / 60.0
 
-    q_traj = get_trajectory(robot_file, dt, plan_grasp)
+    q_traj = get_trajectory(robot_file, dt, plan_grasp, world_file)
     if q_traj is not None:
         q_start = q_traj[0]
         UsdHelper.write_trajectory_animation_with_robot_usd(
@@ -261,4 +259,5 @@ if __name__ == "__main__":
     # save_curobo_world_to_usd()
     setup_curobo_logger("error")
     # save_log_motion_gen("franka.yml")
-    save_curobo_robot_world_to_usd("ur5e_robotiq_2f_140.yml")
+    #save_curobo_robot_world_to_usd("ur5e_robotiq_2f_140.yml", plan_grasp=True, world_file="collision_handover.yml")
+    save_curobo_robot_world_to_usd("franka.yml", plan_grasp=True, world_file="collision_cage.yml")

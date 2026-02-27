@@ -3151,12 +3151,13 @@ class MotionGen(MotionGenConfig):
             )
             if not valid_query:
                 result = MotionGenResult(
-                    success=torch.as_tensor(
-                        [False for _ in solve_state.batch_size],
-                        device=self.motion_gen.tensor_args.device,
+                    success=torch.zeros(
+                        (solve_state.batch_size,),
+                        device=self.tensor_args.device,
+                        dtype=torch.bool,
                     ),
                     valid_query=valid_query,
-                    status="Invalid Hold Partial Pose",
+                    status=MotionGenStatus.INVALID_PARTIAL_POSE_COST_METRIC,
                 )
                 return result
 
