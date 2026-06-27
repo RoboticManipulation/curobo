@@ -1220,7 +1220,9 @@ class MotionGenResult:
         """
         idx = idx.to(dtype=torch.long)
         # copy data from source result:
-        self.success[idx] = source_result.success[idx]
+        self.success = self._copy_success_at_index(
+            self.success, source_result.success, idx
+        )
 
         self.optimized_plan = self._check_none_and_copy_idx(
             self.optimized_plan, source_result.optimized_plan, idx
@@ -1368,10 +1370,32 @@ class MotionGenResult:
         return self.optimized_dt * (self.optimized_plan.position.shape[-2] - 1 - 2 - 1)
 
     @staticmethod
+    def _copy_success_at_index(
+        current_success: torch.Tensor,
+        source_success: torch.Tensor,
+        idx: torch.Tensor,
+    ) -> torch.Tensor:
+        """Copy success flags from source to current, handling scalar batch tensors."""
+        if current_success.ndim == 0 and source_success.ndim == 0:
+            return source_success.clone()
+        if current_success.ndim == 0:
+            idx_val = idx.reshape(-1)[0]
+            return (
+                source_success[idx_val].clone()
+                if source_success.ndim > 0
+                else source_success.clone()
+            )
+        if source_success.ndim == 0:
+            current_success[idx] = source_success
+            return current_success
+        current_success[idx] = source_success[idx]
+        return current_success
+
+    @staticmethod
     def _check_none_and_copy_idx(
         current_tensor: Union[torch.Tensor, JointState, None],
         source_tensor: Union[torch.Tensor, JointState, None],
-        idx: int,
+        idx: Union[int, torch.Tensor],
     ) -> Union[torch.Tensor, JointState]:
         """Helper function to copy data from source tensor to current tensor at index.
 
@@ -1392,7 +1416,27 @@ class MotionGenResult:
                 if isinstance(current_tensor, torch.Tensor) and isinstance(
                     source_tensor, torch.Tensor
                 ):
-                    current_tensor[idx] = source_tensor[idx]
+                    idx_values = (
+                        idx.reshape(-1).tolist()
+                        if isinstance(idx, torch.Tensor)
+                        else [int(idx)]
+                    )
+                    if current_tensor.ndim == 0 or source_tensor.ndim == 0:
+                        if len(idx_values) != 1:
+                            raise ValueError(
+                                "Scalar tensor copy_at_index only supports a single index"
+                            )
+                        src_val = (
+                            source_tensor
+                            if source_tensor.ndim == 0
+                            else source_tensor[idx_values[0]]
+                        )
+                        if current_tensor.ndim == 0:
+                            current_tensor = src_val.clone()
+                        else:
+                            current_tensor[idx_values[0]] = src_val
+                    else:
+                        current_tensor[idx] = source_tensor[idx]
                 elif isinstance(current_tensor, JointState) and isinstance(
                     source_tensor, JointState
                 ):
